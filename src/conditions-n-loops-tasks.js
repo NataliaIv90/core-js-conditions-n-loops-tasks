@@ -412,17 +412,22 @@ function getSpiralMatrix(size) {
  *  ]                 ]
  */
 
-function rotateMatrix(/* matrix */) {
-  // const newMatrix = [...matrix];
-  // for (let row = 0; row < newMatrix.length; row += 1) {
-  //   for (let column = 0; column < row; column += 1) {
-  //     const temp = newMatrix[row][column];
-  //     newMatrix[row][column] = newMatrix[column][row];
-  //     newMatrix[column][row] = temp;
-  //   }
-  // }
-  // return newMatrix;
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const matrix1 = matrix;
+  let arr = [];
+  for (let j = 0; j < matrix.length; j += 1) {
+    let temp = [];
+    for (let i = matrix.length - 1; i >= 0; i -= 1) {
+      temp = [...temp, matrix[i][j]];
+    }
+    arr = [...arr, [...temp]];
+  }
+  for (let i = 0; i < arr.length; i += 1) {
+    for (let j = 0; j < arr[0].length; j += 1) {
+      matrix1[i][j] = arr[i][j];
+    }
+  }
+  return matrix1;
 }
 
 /**
@@ -439,23 +444,24 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  // const n = arr.length;
-
-  // for (let i = 0; i < n - 1; i += 1) {
-  //   for (let j = 0; j < n - i - 1; j += 1) {
-  //     if (arr[j] > arr[j + 1]) {
-  //       // Swap arr[j] and arr[j + 1]
-  //       const temp = arr[j];
-  //       arr[j] = arr[j + 1];
-  //       arr[j + 1] = temp;
-  //     }
-  //   }
-  // }
-
-  // return arr;
-
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const str1 = arr;
+  const map = new Map();
+  for (let i = 0; i < str1.length; i += 1) {
+    const n = arr[i];
+    if (map.has(n)) map.set(n, map.get(n) + 1);
+    else map.set(n, 1);
+  }
+  let cnt = 0;
+  for (let i = -100; i <= 100; i += 1) {
+    if (map.has(i)) {
+      for (let j = 0; j < map.get(i); j += 1) {
+        str1[cnt] = i;
+        cnt += 1;
+      }
+    }
+  }
+  return str1;
 }
 
 /**
@@ -476,24 +482,27 @@ function sortByAsc(/* arr */) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  let result = str;
+  let counter = iterations;
+  let temp = str;
+  const newStr = str;
+  let flagInputStringEquality = false;
 
-  for (let iter = 0; iter < iterations; iter += 1) {
-    let characters = '';
-    let oddChar = '';
-
-    for (let i = 0; i < result.length; i += 1) {
-      if ((i + 1) % 2 === 0) {
-        oddChar += result[i];
-      } else {
-        characters += result[i];
-      }
+  for (let i = 0; i < counter; i += 1) {
+    for (let j = 1; j < temp.length / 2 + 1; j += 1) {
+      const char = temp[j];
+      temp = temp.substring(0, j) + temp.substring(j + 1);
+      temp += char;
     }
 
-    result = characters + oddChar;
+    if (temp === newStr && !flagInputStringEquality) {
+      flagInputStringEquality = true;
+      const randomFactor = Math.floor(counter / (i + 1));
+      counter -= randomFactor * (i + 1);
+      i = -1;
+    }
   }
 
-  return result;
+  return temp;
 }
 
 /**
@@ -516,10 +525,8 @@ function shuffleChar(str, iterations) {
 function getNearestBigger(number) {
   const digits = [];
   let temp = number;
-
   while (temp > 0) {
-    const digit = temp % 10;
-    digits.unshift(digit);
+    digits.unshift(temp % 10);
     temp = Math.floor(temp / 10);
   }
 
@@ -528,29 +535,23 @@ function getNearestBigger(number) {
     i -= 1;
   }
 
-  if (i === -1) {
-    return number;
+  if (i >= 0) {
+    let j = digits.length - 1;
+    while (digits[j] <= digits[i]) {
+      j -= 1;
+    }
+    [digits[i], digits[j]] = [digits[j], digits[i]];
+
+    const rightPart = digits.splice(i + 1);
+    digits.push(...rightPart.sort((a, b) => a - b));
   }
-
-  let j = digits.length - 1;
-  while (digits[j] <= digits[i]) {
-    j -= 1;
-  }
-
-  [digits[i], digits[j]] = [digits[j], digits[i]];
-
-  const remaining = digits.slice(i + 1).sort((a, b) => a - b);
 
   let result = 0;
-  for (let k = 0; k <= i; k += 1) {
+  for (let k = 0; k < digits.length; k += 1) {
     result = result * 10 + digits[k];
   }
 
-  for (let k = 0; k < remaining.length; k += 1) {
-    result = result * 10 + remaining[k];
-  }
-
-  return result;
+  return result === number ? number : result;
 }
 
 module.exports = {
