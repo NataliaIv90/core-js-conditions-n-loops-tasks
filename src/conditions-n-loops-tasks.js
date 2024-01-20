@@ -21,8 +21,8 @@
  *  0  => true
  *  -5 => false
  */
-function isPositive(/* number */) {
-  throw new Error('Not implemented');
+function isPositive(number) {
+  return number >= 0;
 }
 
 /**
@@ -38,8 +38,14 @@ function isPositive(/* number */) {
  *  -5, 0, 5      => 5
  *  -0.1, 0, 0.2  => 0.2
  */
-function getMaxNumber(/* a, b, c */) {
-  throw new Error('Not implemented');
+function getMaxNumber(a, b, c) {
+  if (a > b && a > c) {
+    return a;
+  }
+  if (b > a && b > c) {
+    return b;
+  }
+  return c;
 }
 
 /**
@@ -82,13 +88,24 @@ function canQueenCaptureKing(/* queen, king */) {
  *  2, 2, 5   => false
  *  3, 0, 3   => false
  */
-function isIsoscelesTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isIsoscelesTriangle(a, b, c) {
+  if (a === 0 || b === 0 || c === 0) {
+    return false;
+  }
+  if (a === b && a + b > c) {
+    return true;
+  }
+  if (a === c && a + c > b) {
+    return true;
+  }
+  if (c === b && c + b > a) {
+    return true;
+  }
+  return false;
 }
 
 /**
  * Converts a number to Roman numerals. The number will be between 1 and 39.
- * In this task, the use of methods of the String and Array classes is not allowed.
  *
  * @param {number} num - The number to convert.
  * @return {string} The Roman numeral representation of the number.
@@ -100,8 +117,41 @@ function isIsoscelesTriangle(/* a, b, c */) {
  *  10  => X
  *  26  => XXVI
  */
-function convertToRomanNumerals(/* num */) {
-  throw new Error('Not implemented');
+function convertToRomanNumerals(num) {
+  const lookup = [
+    {
+      key: 'X',
+      value: 10,
+    },
+    {
+      key: 'IX',
+      value: 9,
+    },
+    {
+      key: 'V',
+      value: 5,
+    },
+    {
+      key: 'IV',
+      value: 4,
+    },
+    {
+      key: 'I',
+      value: 1,
+    },
+  ];
+
+  let remainingNum = num;
+  let roman = '';
+
+  for (let i = 0; i < 5; i += 1) {
+    while (remainingNum >= lookup[i].value) {
+      roman += lookup[i].key;
+      remainingNum -= lookup[i].value;
+    }
+  }
+
+  return roman;
 }
 
 /**
@@ -119,10 +169,50 @@ function convertToRomanNumerals(/* num */) {
  *  '10,5'    => 'one zero point five'
  *  '1950.2'  => 'one nine five zero point two'
  */
-function convertNumberToString(/* numberStr */) {
-  throw new Error('Not implemented');
-}
+function convertNumberToString(numberStr) {
+  const numberNamesObject = {
+    0: 'zero',
+    1: 'one',
+    2: 'two',
+    3: 'three',
+    4: 'four',
+    5: 'five',
+    6: 'six',
+    7: 'seven',
+    8: 'eight',
+    9: 'nine',
+    '.': 'point',
+    '-': 'minus',
+    ',': 'point',
+  };
 
+  let result = '';
+
+  for (let i = 0; i < numberStr.length; i += 1) {
+    const currentChar = numberStr[i];
+    switch (currentChar) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '.':
+      case '-':
+      case ',':
+        result += (i > 0 ? ' ' : '') + numberNamesObject[currentChar];
+        break;
+      default:
+        throw new Error(`Unsupported character: ${currentChar}`);
+    }
+  }
+
+  return result;
+}
 /**
  * Determines whether a string is a palindrome.
  * In this task, the use of methods of the String and Array classes is not allowed.
